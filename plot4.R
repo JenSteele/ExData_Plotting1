@@ -1,0 +1,21 @@
+data <- read.table("C:/Users/jste644/Documents/R/Exploratory_data_analysis/household_power_consumption.txt", header=TRUE, sep=";", na.strings = "?")
+dat <- subset(data,Date=="1/2/2007" | Date=="2/2/2007")
+
+dat$Date <- as.Date(dat$Date,"%d/%m/%Y")
+library(lubridate)
+dat$date_time <- paste(dat$Date,dat$Time,sep=" ")
+dat$date_time <- ymd_hms(dat$date_time)
+dat$day <- wday(dat$date_time, label = TRUE, abbr = FALSE)
+Global <- dat$Global_active_power
+yrange <- range(dat$Global_active_power) 
+
+png("C:/Users/jste644/Documents/R/Exploratory_data_analysis/plot4.png",width=480,height=480)
+par(mfrow=c(2,2))
+plot(dat$date_time,dat$Global_active_power, axes=T, ylim=yrange, typ='l', ann=T,ylab="Global Active Power (kilowatts)",xlab="")
+plot(dat$date_time,dat$Voltage, axes=T, ylim=range(dat$Voltage), typ='l', ann=T,ylab="Voltage",xlab="")
+plot(dat$date_time, dat$Sub_metering_1,axes=T, ylim=range(dat$Sub_metering_1), typ='l', ann=T,ylab="Energy sub metering",xlab="")
+lines(dat$date_time,dat$Sub_metering_2,lwd=1,type="l",col="red")
+lines(dat$date_time,dat$Sub_metering_3,lwd=1,type="l",col="blue")
+legend("topright",legend=c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),lwd=c(2.5,2.5,2.5),col=c("black","blue","red"),bty="n")
+plot(dat$date_time,dat$Global_reactive_power, axes=T, ylim=range(dat$Global_reactive_power), typ='l', ann=T,ylab="Global Active Power (kilowatts)",xlab="")
+dev.off()
